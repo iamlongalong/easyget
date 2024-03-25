@@ -1,0 +1,11 @@
+
+types or functions that already exits, you can use them directly:
+
+type IFilter interface {
+	func Filt(data []byte) []byte
+}
+
+l.Errorf(format string, args ...interface{})
+l.Debugf(format string, args ...interface{})
+
+==== implement the codes below ====

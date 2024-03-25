@@ -1,0 +1,7 @@
+{
+    "name": "longalong",
+    "age": 18,
+    "gender": "male",
+    "hobbies": ["eating", "cooking", "coding"],
+    "has_computer": true
+}

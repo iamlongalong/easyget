@@ -1,6 +1,9 @@
 package easyget
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 var dfmgr = NewKVManager()
 
@@ -46,6 +49,14 @@ func (kvm *KVManager) Get(key string) (string, bool) {
 
 	return g.Get(key)
 }
+func (kvm *KVManager) MustGet(key string) string {
+	v, ok := kvm.Get(key)
+	if !ok {
+		panic(fmt.Errorf("[easyget] MustGet %s fail", key))
+	}
+
+	return v
+}
 
 func SetGetter(key string, g Getter) {
 	dfmgr.SetGetter(key, g)
@@ -57,4 +68,8 @@ func SetDefault(key string, v string) {
 
 func Get(key string) (string, bool) {
 	return dfmgr.Get(key)
+}
+
+func MustGet(key string) string {
+	return dfmgr.MustGet(key)
 }

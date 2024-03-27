@@ -9,11 +9,13 @@ import (
 
 // read string from stdin
 type StdGetter struct {
+	prompt  string
 	filters []IFilter
 }
 
-func NewStdGetter(filters ...IFilter) *StdGetter {
+func NewStdGetter(prompt string, filters ...IFilter) *StdGetter {
 	return &StdGetter{
+		prompt:  prompt,
 		filters: filters,
 	}
 }
@@ -21,7 +23,11 @@ func NewStdGetter(filters ...IFilter) *StdGetter {
 func (sg *StdGetter) Get(key string) (string, bool) {
 	// 如果在终端中运行, 打印提示信息
 	if isTerminal() {
-		fmt.Printf("please input the value of %s:\t", key)
+		prompt := sg.prompt
+		if prompt == "" {
+			prompt = fmt.Sprintf("please input the value of [%s]:\t", key)
+		}
+		fmt.Print(prompt)
 	}
 
 	reader := bufio.NewReader(os.Stdin)

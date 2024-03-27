@@ -32,7 +32,14 @@ func (sg *SelectGetter) Get(key string) (string, bool) {
 
 	items := make([]string, len(kvs))
 	for i, kv := range kvs {
-		items[i] = fmt.Sprintf("%s: %s", kv.Key, kv.Value)
+		val := ""
+		if len(kv.Key) > 0 {
+			val = fmt.Sprintf("%s: %s", kv.Key, kv.Value)
+		} else {
+			val = fmt.Sprintf("%s", kv.Value)
+		}
+
+		items[i] = val
 	}
 
 	selectPrompt := promptui.Select{

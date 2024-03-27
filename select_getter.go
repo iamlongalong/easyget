@@ -46,6 +46,7 @@ func (sg *SelectGetter) Get(key string) (string, bool) {
 		Label: fmt.Sprintf("Select Value for [%s]", key),
 		Items: items,
 		// HideSelected: true,
+		StartInSearchMode: true,
 		Searcher: func(input string, index int) bool {
 			return strings.Contains(items[index], input)
 		},

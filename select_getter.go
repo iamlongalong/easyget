@@ -48,7 +48,7 @@ func (sg *SelectGetter) Get(key string) (string, bool) {
 		// HideSelected: true,
 		StartInSearchMode: true,
 		Searcher: func(input string, index int) bool {
-			return strings.Contains(items[index], input)
+			return strings.Contains(strings.ToLower(items[index]), strings.ToLower(input))
 		},
 	}
 

@@ -25,7 +25,7 @@ func main() {
 
 	// cg := easyget.NewJSONGetterFromHTTP()
 
-	gg := easyget.NewSelectGetter(fg)
+	gg := easyget.NewSelectGetter(fg, nil)
 
 	v, ok = gg.Get("name")
 	if !ok {

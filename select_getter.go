@@ -2,6 +2,8 @@ package easyget
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"github.com/manifoldco/promptui"
@@ -19,11 +21,30 @@ type KVPariGetter interface {
 // read string from stdin
 type SelectGetter struct {
 	kvsGetter KVPariGetter
+	config    *SelectConfig
 }
 
-func NewSelectGetter(kvsGetter KVPariGetter) *SelectGetter {
+type SelectConfig struct {
+	Prompt string
+	Stdin  io.ReadCloser
+	Stdout io.WriteCloser
+}
+
+func NewSelectGetter(kvsGetter KVPariGetter, config *SelectConfig) *SelectGetter {
+	if config == nil {
+		config = &SelectConfig{}
+	}
+
+	if config.Stdin == nil {
+		config.Stdin = os.Stdin
+	}
+	if config.Stdout == nil {
+		config.Stdout = os.Stdout
+	}
+
 	return &SelectGetter{
 		kvsGetter: kvsGetter,
+		config:    config,
 	}
 }
 
@@ -42,14 +63,21 @@ func (sg *SelectGetter) Get(key string) (string, bool) {
 		items[i] = val
 	}
 
+	prompt := sg.config.Prompt
+	if len(prompt) == 0 {
+		prompt = fmt.Sprintf("Select Value for [%s]", key)
+	}
+
 	selectPrompt := promptui.Select{
-		Label: fmt.Sprintf("Select Value for [%s]", key),
+		Label: prompt,
 		Items: items,
 		// HideSelected: true,
 		StartInSearchMode: true,
 		Searcher: func(input string, index int) bool {
 			return strings.Contains(strings.ToLower(items[index]), strings.ToLower(input))
 		},
+		Stdin:  sg.config.Stdin,
+		Stdout: sg.config.Stdout,
 	}
 
 	i, _, err := selectPrompt.Run()
